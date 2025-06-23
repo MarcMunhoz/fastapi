@@ -1,0 +1,12 @@
+services:
+  fastapi:
+    build:
+      context: .
+      no_cache: true
+    image: fastapi_img
+    container_name: fastapi_ctn
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    restart: unless-stopped
