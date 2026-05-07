@@ -2,12 +2,12 @@ name: Docker Image CI
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: ["stable-main"]
     types: [closed]
 
 jobs:
   docker:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'develop'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'stable-main' && github.event.pull_request.head.ref == 'stable-develop'
     runs-on: ubuntu-latest
     permissions:
       contents: read
