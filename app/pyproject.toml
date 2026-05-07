@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "fast-api"
-version = "0.0.2"
+version = "0.0.3"
 description = "FastAPI boilerplate with Docker"
 authors = ["Marcelo Munhoz <me@marcelomunhoz.com>"]
 package-mode = false
