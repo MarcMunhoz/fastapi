@@ -13,7 +13,7 @@ jobs:
       contents: read
 
     env:
-      IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/fast-api
+      IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi_img
 
     steps:
       - name: Checkout
