@@ -2,6 +2,7 @@ services:
   fastapi:
     build:
       context: .
+      target: dev
       no_cache: true
     image: fastapi_img
     container_name: fastapi_ctn
