@@ -44,7 +44,6 @@ jobs:
           tags: |
             type=raw,value=latest
             type=raw,value=${{ env.APP_VERSION }}
-            type=sha
 
       - name: Build and push
         uses: docker/build-push-action@v6

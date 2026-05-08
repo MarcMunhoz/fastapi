@@ -41,7 +41,6 @@ API documentation:
 
 - `latest`: latest published image from the stable branch workflow
 - `0.0.3`: current semantic version
-- `sha-...`: commit-specific image tag for traceability
 
 Prefer versioned tags such as `0.0.3` for reproducible deployments. Use `latest` only when you intentionally want the newest published image.
 
