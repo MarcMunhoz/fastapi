@@ -2,7 +2,7 @@ FROM python:3.12-alpine AS base
 
 LABEL author="Marcelo Munhoz <me@marcelomunhoz.com>" \
   description="FastAPI boilerplate with Docker" \
-  version="0.0.4" \
+  version="0.0.5" \
   date_created="2026-05-07"
 
 ENV PYTHONDONTWRITEBYTECODE=1 \

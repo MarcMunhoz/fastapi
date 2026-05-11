@@ -2,7 +2,7 @@
 
 This is a simple and lightweight template for building a FastAPI application using Python 3.12 (Alpine-based) with Docker and Docker Compose.
 
-Current version: `0.0.4`
+Current version: `0.0.5`
 
 ## 🚀 Features
 
@@ -11,6 +11,8 @@ Current version: `0.0.4`
 - Dockerized with Python 3.12 (Alpine-based)
 - Hot-reload for development with Uvicorn
 - Auto-generated Swagger UI and ReDoc documentation
+- Ruff for linting and formatting
+- pytest with coverage support
 - Clean project structure with isolated source code and tests
 
 ## 🗂️ Project Structure
@@ -87,7 +89,7 @@ Response:
 
 ## 🧪 Running Tests
 
-> Test scaffolding is located under `app/tests/`. Add your unit tests there.
+Tests are configured with pytest and located under `app/tests/`. Coverage support is available through `pytest-cov`.
 
 ## ⚙️ Development
 
@@ -96,6 +98,8 @@ Open a shell inside the running container:
 ```bash
 make shell
 ```
+
+Code quality is configured with Ruff in `app/pyproject.toml`, covering linting, import ordering, and formatting rules.
 
 ## 📦 Dependency Management
 
