@@ -2,6 +2,8 @@
 
 This is a simple and lightweight template for building a FastAPI application using Python 3.12 (Alpine-based) with Docker and Docker Compose.
 
+Current version: `0.0.4`
+
 ## 🚀 Features
 
 - FastAPI (ASGI framework)
@@ -35,7 +37,7 @@ This is a simple and lightweight template for building a FastAPI application usi
 ### Build and start the container
 
 ```bash
-make up
+make up-dev
 ```
 
 This will install dependencies using Poetry and run the app via Uvicorn with auto-reload.
@@ -43,6 +45,7 @@ This will install dependencies using Poetry and run the app via Uvicorn with aut
 ### Access the API
 
 - API Root: [http://localhost:8000](http://localhost:8000)
+- Health Check: [http://localhost:8000/health](http://localhost:8000/health)
 - Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
 - ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
@@ -55,7 +58,7 @@ make stop
 ### Remove container and image
 
 ```bash
-make down
+make down-dev
 ```
 
 ## 🧠 API Example
@@ -68,6 +71,18 @@ Response:
 
 ```json
 {"message": "Hello, World!"}
+```
+
+Health check:
+
+```bash
+curl http://localhost:8000/health
+```
+
+Response:
+
+```json
+{"status": "ok"}
 ```
 
 ## 🧪 Running Tests
