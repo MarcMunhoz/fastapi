@@ -1,9 +1,12 @@
 up-dev:
-	docker compose up -d
+	docker compose up -d --build --force-recreate --remove-orphans
 
 up-prod:
 	docker build --target prod -t fastapi_img:prod . && \
 	docker run -d --name fastapi_ctn -p 8000:8000 fastapi_img:prod
+
+start-dev:
+	docker compose start
 
 stop:
 	docker compose stop
@@ -17,7 +20,10 @@ down-prod:
 	docker image rm fastapi_img:prod || true
 
 logs:
-	docker compose logs -f
+	docker compose logs
 
 shell:
 	docker compose exec fastapi sh
+
+audit:
+	docker compose exec fastapi poetry run pip-audit

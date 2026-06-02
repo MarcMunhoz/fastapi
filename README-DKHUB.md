@@ -17,13 +17,13 @@ This image is published from the GitHub repository workflow and is intended as a
 Pull a specific version:
 
 ```bash
-docker pull himunhoz/fastapi_img:0.0.5
+docker pull himunhoz/fastapi_img:0.0.6
 ```
 
 Run the container:
 
 ```bash
-docker run -p 8000:8000 himunhoz/fastapi_img:0.0.5
+docker run -p 8000:8000 himunhoz/fastapi_img:0.0.6
 ```
 
 Then open:
@@ -46,14 +46,14 @@ API documentation:
 ## 🏷️ Tags
 
 - `latest`: latest published image from the stable branch workflow
-- `0.0.5`: current semantic version
+- `0.0.6`: current semantic version
 
-Prefer versioned tags such as `0.0.5` for reproducible deployments. Use `latest` only when you intentionally want the newest published image.
+Prefer versioned tags such as `0.0.6` for reproducible deployments. Use `latest` only when you intentionally want the newest published image.
 
 ## 🏗️ As a Base Image
 
 ```Dockerfile
-FROM himunhoz/fastapi_img:0.0.5
+FROM himunhoz/fastapi_img:0.0.6
 
 COPY ./app /app
 ```
