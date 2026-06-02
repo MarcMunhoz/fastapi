@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-06-02
+
+### [v0.0.6]
+
+#### Added
+- `start-dev` Makefile target to start an existing Docker Compose service.
+- `audit` Makefile target to run dependency vulnerability checks inside the container.
+
+#### Changed
+- Version bumped to `0.0.6` in project metadata and Docker image labels.
+- Docker image documentation updated to reference the `0.0.6` tag.
+- `up-dev` now rebuilds, recreates, and removes orphaned Docker Compose services.
+- `logs` now prints current Docker Compose logs without following the stream.
+- Locked dependencies updated, including idna and starlette security fixes.
+
 ## 2026-05-11
 
 ### [v0.0.5]

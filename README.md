@@ -2,7 +2,7 @@
 
 This is a simple and lightweight template for building a FastAPI application using Python 3.12 (Alpine-based) with Docker and Docker Compose.
 
-Current version: `0.0.5`
+Current version: `0.0.6`
 
 ## 🚀 Features
 
@@ -43,6 +43,12 @@ make up-dev
 ```
 
 This will install dependencies using Poetry and run the app via Uvicorn with auto-reload.
+
+### Start an existing development container
+
+```bash
+make start-dev
+```
 
 ### Access the API
 
@@ -100,6 +106,12 @@ make shell
 ```
 
 Code quality is configured with Ruff in `app/pyproject.toml`, covering linting, import ordering, and formatting rules.
+
+### Audit dependencies
+
+```bash
+make audit
+```
 
 ## 📦 Dependency Management
 
