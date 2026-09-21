@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-09-21
+
+### [v0.0.7]
+
+#### Fixed
+- Updated AnyIO, Starlette, pip, msgpack, and IDNA beyond known vulnerable version ranges.
+- Removed six Dependabot findings and the additional `PYSEC-2026-215` advisory from the resolved dependency graph.
+
+#### Changed
+- Version bumped to `0.0.7` in project metadata and Docker image labels.
+- Docker image documentation updated to reference the `0.0.7` tag.
+- Added the dependency security specification and archived its completed OpenSpec change.
+
 ## 2026-06-02
 
 ### [v0.0.6]
