@@ -17,4 +17,4 @@
 ## 3. Verify Repository Remediation
 
 - [x] 3.1 Review the final dependency metadata diff and record the resolved versions and validation evidence.
-- [ ] 3.2 After the dependency update is pushed, confirm that GitHub closes Dependabot alerts 6 through 11 without dismissing them manually.
+- [x] 3.2 After the dependency update is pushed, confirm that GitHub closes Dependabot alerts 6 through 11 without dismissing them manually.
