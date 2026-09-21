@@ -11,6 +11,7 @@ The project SHALL lock Python dependencies to versions that are outside the vuln
 - **WHEN** the production dependency graph is resolved
 - **THEN** `anyio` SHALL resolve to version 4.14.2 or newer
 - **AND** `starlette` SHALL resolve to version 1.3.1 or newer
+- **AND** `idna` SHALL resolve to version 3.15 or newer
 
 #### Scenario: Development dependency fixes are locked
 - **WHEN** the development dependency graph is resolved
@@ -38,3 +39,4 @@ The project SHALL record the remediated dependency graph in the version-controll
 #### Scenario: The remediated graph is audited
 - **WHEN** the committed dependency graph is checked against the advisory database
 - **THEN** none of the six Dependabot advisories addressed by this change SHALL be reported
+- **AND** the additional `PYSEC-2026-215` advisory discovered during implementation SHALL NOT be reported

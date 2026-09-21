@@ -1,6 +1,6 @@
 ## Context
 
-See `proposal.md` for motivation. The project declares FastAPI and Uvicorn as direct runtime dependencies and uses pip-audit as development tooling. The vulnerable packages are all transitive dependencies recorded in `app/poetry.lock`: Starlette and AnyIO belong to the main group, while pip and msgpack belong to the development group.
+See `proposal.md` for motivation. The project declares FastAPI and Uvicorn as direct runtime dependencies and uses pip-audit as development tooling. The packages from the original Dependabot alerts are all transitive dependencies recorded in `app/poetry.lock`: Starlette and AnyIO belong to the main group, while pip and msgpack belong to the development group. The implementation audit additionally identified vulnerable IDNA 3.13 in both groups.
 
 The container build disables Poetry virtual environments and installs main dependencies into the builder image. The production image copies those installed packages, while the development target performs a second install that includes development groups. Dependency commands must run in the container so host-local Poetry environments cannot influence the result.
 
@@ -24,7 +24,7 @@ The container build disables Poetry virtual environments and installs main depen
 
 ### Use a targeted transitive dependency refresh
 
-Regenerate the lockfile by targeting `anyio`, `starlette`, `pip`, and `msgpack`. Their parent constraints already admit the fixed versions identified by Dependabot, so a targeted refresh minimizes unrelated churn.
+Regenerate the lockfile by targeting `anyio`, `starlette`, `pip`, and `msgpack`, then target `idna` after reproducing `PYSEC-2026-215` with the container audit. Their parent constraints admit the fixed versions, so targeted refreshes minimize unrelated churn.
 
 Alternative considered: refresh the entire dependency graph. This could also resolve the alerts but would mix security remediation with unrelated upgrades and increase regression risk.
 
@@ -54,9 +54,19 @@ Verify the four resolved versions directly in `app/poetry.lock`, then run the pr
 
 ## Migration Plan
 
-1. Resolve only the four vulnerable transitive packages inside the project container.
+1. Resolve the vulnerable transitive packages inside the project container, including any additional package identified by the implementation audit.
 2. Review the lockfile delta and confirm the fixed minimum versions and dependency groups.
 3. Validate Poetry metadata, dependency auditing, application checks, and both container targets.
 4. Push the lockfile change and confirm GitHub closes all six Dependabot alerts.
 
 Rollback consists of reverting the dependency metadata commit and rebuilding the previous container image. Because the change has no data migration or API changes, no application-state rollback is required.
+
+## Validation Evidence
+
+- The targeted container update resolved AnyIO 4.15.1, Starlette 1.6.0, pip 26.2.1, msgpack 1.2.2, IDNA 3.20, and the required typing-extensions 4.16.0 dependency.
+- `poetry check` completed successfully inside the development container, with only pre-existing deprecation warnings for legacy Poetry metadata fields.
+- The first `pip-audit` run proved `PYSEC-2026-215` was present through IDNA 3.13; after the targeted IDNA update, the audit reported no known vulnerabilities.
+- The clean audit covers the original advisories CVE-2026-63374, CVE-2026-64847, CVE-2026-13346, GHSA-6v7p-g79w-8964, CVE-2026-54283, and CVE-2026-54282, plus `PYSEC-2026-215`.
+- Container-local HTTP checks returned `{'message': 'Hello, World!'}` from `/` and `{'status': 'ok'}` from `/health`.
+- Both development and production targets built successfully from the updated lockfile.
+- The production image reported AnyIO 4.15.1, Starlette 1.6.0, and IDNA 3.20, while `pip-audit`, msgpack, pytest, and Ruff were absent.
