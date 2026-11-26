@@ -40,6 +40,25 @@ COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/pytho
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY app/ .
 
+# Keep the pip inherited from the base image on the audited lockfile version.
+RUN python - <<'PY'
+import subprocess
+import sys
+import tomllib
+from pathlib import Path
+
+lock = tomllib.loads(Path("poetry.lock").read_text())
+pip = next(package for package in lock["package"] if package["name"] == "pip")
+hashes = " ".join(f"--hash={file['hash']}" for file in pip["files"])
+subprocess.run(
+    [sys.executable, "-m", "pip", "install", "--no-cache-dir", "--no-deps",
+     "--require-hashes", "-r", "/dev/stdin"],
+    input=f"pip=={pip['version']} {hashes}\n",
+    text=True,
+    check=True,
+)
+PY
+
 EXPOSE 8000
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
