@@ -1,32 +1,23 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  This repository is a FastAPI application template. The application runs
+  with Uvicorn on Python 3.12 (Alpine) using Docker and Docker Compose.
+  The entry point is app/main.py. Poetry manages dependencies through
+  app/pyproject.toml and app/poetry.lock.
+  Tests use pytest under app/tests/. Ruff handles linting and formatting.
+  The Makefile provides container lifecycle commands and a pip-audit target.
+  Run application builds, dependency commands, and validation in the project
+  container. Read RTK.md for repository workflow guidance.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
-
-# Per-operation guidance (optional)
-# Add advisory guidance for how apply and archive work should be conducted.
-# This is separate from artifact rules above.
-# Example:
-#   operations:
-#     apply:
-#       guidance:
-#         - Keep test summaries concise
-#     archive:
-#       guidance:
-#         - Summarize the archive outcome before finishing
+rules:
+  proposal:
+    - State the intended outcome, affected capabilities, and scope.
+  design:
+    - Explain implementation decisions and compatibility implications where relevant.
+  specs:
+    - Describe observable requirements and scenarios for the affected capability.
+    - Preserve existing requirements and scenarios outside the requested scope.
+  tasks:
+    - List implementation steps and directly relevant validation.
+    - Keep workflow closure and external actions out of the task list.

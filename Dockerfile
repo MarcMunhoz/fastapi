@@ -2,7 +2,7 @@ FROM python:3.12-alpine AS base
 
 LABEL author="Marcelo Munhoz <me@marcelomunhoz.com>" \
   description="FastAPI boilerplate with Docker" \
-  version="0.0.7" \
+  version="0.0.8" \
   date_created="2026-05-07"
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -39,6 +39,25 @@ RUN apk add --no-cache libstdc++
 COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY app/ .
+
+# Keep the pip inherited from the base image on the audited lockfile version.
+RUN python - <<'PY'
+import subprocess
+import sys
+import tomllib
+from pathlib import Path
+
+lock = tomllib.loads(Path("poetry.lock").read_text())
+pip = next(package for package in lock["package"] if package["name"] == "pip")
+hashes = " ".join(f"--hash={file['hash']}" for file in pip["files"])
+subprocess.run(
+    [sys.executable, "-m", "pip", "install", "--no-cache-dir", "--no-deps",
+     "--require-hashes", "-r", "/dev/stdin"],
+    input=f"pip=={pip['version']} {hashes}\n",
+    text=True,
+    check=True,
+)
+PY
 
 EXPOSE 8000
 

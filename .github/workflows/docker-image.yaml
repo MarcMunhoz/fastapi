@@ -1,60 +1,78 @@
-name: Docker Image CI
+name: Publish release
 
 on:
-  pull_request:
-    branches: ["stable-main"]
-    types: [closed]
+  push:
+    branches: [stable-main]
+
+permissions:
+  contents: read
 
 jobs:
-  docker:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'stable-main' && github.event.pull_request.head.ref == 'stable-develop'
+  plan:
+    if: ${{ !github.event.created && !github.event.deleted && !github.event.forced }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
-    env:
-      IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi_img
-
+      pull-requests: read
+    outputs:
+      version: ${{ steps.release.outputs.version }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate version increase and promotion
+        id: release
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -B .github/scripts/publish_release.py plan
 
-      - name: Extract app version
-        run: |
-          VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' app/pyproject.toml | head -n 1)
-          test -n "$VERSION"
-          echo "APP_VERSION=${VERSION}" >> "$GITHUB_ENV"
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+  publish:
+    needs: plan
+    if: ${{ needs.plan.outputs.version != '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: stable-main-release-publication
+      queue: max
+    env:
+      APP_VERSION: ${{ needs.plan.outputs.version }}
+      IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi_img
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest
-            type=raw,value=${{ env.APP_VERSION }}
+      - name: Check existing versioned artifacts
+        id: preflight
+        run: python3 -B .github/scripts/publish_release.py preflight
 
-      - name: Build and push
+      - name: Publish versioned image
+        if: ${{ steps.preflight.outputs.image_exists == 'false' }}
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.IMAGE_NAME }}:${{ env.APP_VERSION }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.version=${{ env.APP_VERSION }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Update latest without rolling back a newer release
+        id: promote
+        run: python3 -B .github/scripts/publish_release.py promote-image
 
       - name: Update Docker Hub description
+        if: ${{ steps.promote.outputs.latest == 'true' }}
         uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -62,3 +80,9 @@ jobs:
           repository: ${{ env.IMAGE_NAME }}
           readme-filepath: ./README-DKHUB.md
           short-description: FastAPI boilerplate with Docker
+
+      - name: Publish Git tag and GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LATEST: ${{ steps.promote.outputs.latest }}
+        run: python3 -B .github/scripts/publish_release.py publish-github

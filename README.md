@@ -2,7 +2,7 @@
 
 This is a simple and lightweight template for building a FastAPI application using Python 3.12 (Alpine-based) with Docker and Docker Compose.
 
-Current version: `0.0.7`
+Current version: `0.0.8`
 
 ## 🚀 Features
 

@@ -1,0 +1,34 @@
+name: Release quality
+
+on:
+  pull_request:
+    branches: [stable-main]
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions: {}
+
+jobs:
+  prepare:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'stable-develop' &&
+      !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    concurrency:
+      group: prepare-stable-develop-release
+    permissions:
+      contents: write
+      statuses: write
+    steps:
+      - name: Check out the promotion source
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PREPARATION_TOKEN || github.token }}
+      - name: Prepare and validate release metadata
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/prepare_promotion.sh

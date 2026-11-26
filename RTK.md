@@ -1,32 +1,21 @@
-# RTK - Rust Token Killer (Codex CLI)
+# Repository guidance
 
-**Usage**: Token-optimized CLI proxy for shell commands.
+## Shell commands
 
-## Rule
-
-Always prefix shell commands with `rtk`.
-
-Examples:
+Prefix shell commands with `rtk`. Use `rtk proxy <command>` when the command needs unfiltered output, such as OpenSpec JSON.
 
 ```bash
 rtk git status
-rtk cargo test
-rtk npm run build
-rtk pytest -q
+rtk proxy openspec list --json
+rtk docker compose exec fastapi poetry run pytest
 ```
 
-## Meta Commands
+Run application builds, Poetry commands, and application checks in the project container.
 
-```bash
-rtk gain            # Token savings analytics
-rtk gain --history  # Recent command savings history
-rtk proxy <cmd>     # Run raw command without filtering
-```
+## OpenSpec
 
-## Verification
+Use the five workflows in `.agents/skills/` and the project context in `openspec/config.yaml`. Read the main specifications under `openspec/specs/` before proposing or implementing changes that affect them.
 
-```bash
-rtk --version
-rtk gain
-which rtk
-```
+The change lifecycle is propose → apply → sync → archive. Exploration is optional. Run each phase when requested. Keep change artifacts focused on implementation and validation.
+
+Use the repository archive skill to archive changes. Synchronize every applicable delta spec and verify its effects in the main specs before moving the change. If the comparison or sync fails, leave the change active. Changes without delta specs can proceed after confirming that there are none.
