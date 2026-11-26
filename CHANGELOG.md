@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<!-- release-metadata: 0.0.8 -->
+## 2026-11-26
+
+### [v0.0.8]
+
+#### Fixed
+- Remediates Python dependency vulnerabilities
+
+<!-- /release-metadata -->
+
 ## 2026-09-21
 
 ### [v0.0.7]
