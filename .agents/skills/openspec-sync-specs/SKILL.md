@@ -50,19 +50,12 @@ This is an **agent-driven** operation - you will read delta specs and directly e
    do not infer them from other artifacts, and stop without requesting artifact
    instructions or writing a main spec.
 
-   Sync every path in `existingOutputPaths` unless the caller narrowed the set.
-   A caller narrows it by naming an explicit list of complete entries from
-   `existingOutputPaths` — copy those absolute values verbatim. Archive does
-   this inline, and a user can too (for example, by selecting the entry ending
-   in `/specs/billing/invoices/spec.md`).
-   Then sync only the named paths and leave the remaining delta specs untouched:
-   bulk archive excludes a delta whose implementation it could not find, and
-   syncing it anyway would write a main spec the caller deliberately withheld.
-   Carry that narrowed selection through step 4; never widen it back to the full
-   list. If a named path is not in `existingOutputPaths`, do not sync it —
-   report it and stop, rather than dropping it silently. If the named list is
-   empty, report that there is nothing to sync and stop without writing a main
-   spec.
+   Sync every path by default. Archive always requires the full set.
+   During standalone sync, a user may select a subset by naming complete
+   entries from `existingOutputPaths`. Use those paths verbatim through step 4
+   and leave the remaining paths for a separate sync. If any named path is
+   outside that list, report it and stop before writing a main spec. If the
+   selection is empty, report that there is nothing to sync and stop.
 
    Each delta spec file contains sections like:
    - `## ADDED Requirements` - New requirements to add

@@ -52,7 +52,7 @@ Implement tasks from an OpenSpec change.
 
    **Handle states:**
    - If `state: "blocked"` (missing artifacts): show message, suggest using `$openspec-continue-change (Codex) or /openspec-continue-change (other agents)` (if it is not installed, run `openspec status --change "<name>" --json` to see the next artifact and `openspec instructions <artifact-id> --change "<name>" --json` for how to create it)
-   - If `state: "all_done"`: congratulate, suggest archive
+   - If `state: "all_done"`: report completion and point to the sync and archive skills
    - Otherwise: proceed to implementation
 
    Treat `context` as a required prompt-level input. Read and consider it, and
@@ -108,7 +108,7 @@ Implement tasks from an OpenSpec change.
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
-   - If all done: suggest archive
+   - If all done: point to the sync and archive skills
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**
@@ -139,7 +139,7 @@ Working on task 4/7: <task description>
 - [x] Task 2
 ...
 
-All tasks complete! You can archive this change with `$openspec-archive-change (Codex) or /openspec-archive-change (other agents)`.
+All tasks complete. Sync applicable delta specs with `$openspec-sync-specs` before archiving with `$openspec-archive-change (Codex) or /openspec-archive-change (other agents)`.
 ```
 
 **Output On Pause (Issue Encountered)**
